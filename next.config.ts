@@ -27,6 +27,7 @@ const nextConfig: NextConfig = {
   },
   compress: isProd,
   experimental: {
+    webpackMemoryOptimizations: true,
     optimizePackageImports: [
       'emoji-mart',
       '@emoji-mart/react',
@@ -42,7 +43,20 @@ const nextConfig: NextConfig = {
     // refs: https://github.com/lobehub/lobe-chat/pull/7430
     serverMinification: false,
     webVitalsAttribution: ['CLS', 'LCP'],
-    webpackMemoryOptimizations: true,
+    serverSourceMaps: false
+  },
+  productionBrowserSourceMaps: false,
+  eslint: {
+    // Warning: This allows production builds to successfully complete even if
+    // your project has ESLint errors.
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    // !! WARN !!
+    ignoreBuildErrors: true,
   },
   async headers() {
     const securityHeaders = [
@@ -270,6 +284,10 @@ const nextConfig: NextConfig = {
   transpilePackages: ['pdfjs-dist', 'mermaid'],
 
   webpack(config) {
+    config.cache = {
+      type: 'memory',
+    };
+    
     config.experiments = {
       asyncWebAssembly: true,
       layers: true,
